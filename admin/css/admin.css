@@ -1,0 +1,12 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+#toy_description, #toy_material {
+	display: block;
+	margin: 12px 0px 0px;
+	height: 4em;
+	width: 100%;
+}
+#toy_stock { width: 155px; }
