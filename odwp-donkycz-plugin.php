@@ -34,24 +34,28 @@ if ( !defined( 'WPINC' ) ) {
 if ( !function_exists( 'activate_odwpdcz' ) ):
 /**
  * The code that runs during plugin activation.
+ *
+ * @since 0.1
  * @see DonkyCz_Activator
  */
 function activate_odwpdcz() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-donkycz-activator.php';
 	DonkyCz_Activator::activate();
-} // end activate_odwpdcz()
+}
 endif;
 
 
 if ( !function_exists( 'deactivate_odwpdcz' ) ):
 /**
  * The code that runs during plugin deactivation.
+ *
+ * @since 0.1
  * @see DonkyCz_Deactivator
  */
 function deactivate_odwpdcz() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-donkycz-deactivator.php';
 	DonkyCz_Deactivator::deactivate();
-} // end deactivate_odwpdcz()
+}
 endif;
 
 
@@ -74,12 +78,11 @@ if ( !function_exists( 'run_odwpdcz' ) ):
  * not affect the page life cycle.
  *
  * @since 0.1
- * @return void
  */
 function run_odwpdcz() {
 	$plugin = new DonkyCz();
 	$plugin->run();
-} // end run_odwpdcz()
+}
 endif;
 
 
