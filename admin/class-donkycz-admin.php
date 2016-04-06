@@ -121,9 +121,11 @@ class DonkyCz_Admin {
 	public function toy_metabox_description( $post ) {
 		$description = get_post_meta( $post->ID, 'toy_description', true );
 ?>
-<label class="screen-reader-text" for="toy_description"><?= __( 'Popis:', DonkyCz::SLUG ) ?></label>
-<textarea id="toy_description" name="toy_description" cols="40" rows="1"><?= $description ?></textarea>
-<p><?= __( 'Zadejte stručný popis hračky (maximálně 50 znaků).' ) ?></p>
+<fieldset class="toy-description-metabox toy-main-metabox">
+	<label class="screen-reader-text" for="toy_description"><?= __( 'Popis:', DonkyCz::SLUG ) ?></label>
+	<textarea id="toy_description" name="toy_description" cols="40" rows="1"><?= $description ?></textarea>
+	<p><?= __( 'Zadejte stručný popis hračky (maximálně 50 znaků).' ) ?></p>
+</fieldset>
 <?php
 	}
 
@@ -137,9 +139,11 @@ class DonkyCz_Admin {
 	public function toy_metabox_material( $post ) {
 		$material = get_post_meta( $post->ID, 'toy_material', true );
 ?>
-<label class="screen-reader-text" for="toy_material"><?= __( 'Použitý materiál:', DonkyCz::SLUG ) ?></label>
-<textarea id="toy_material" name="toy_material" cols="40" rows="1"><?= $material ?></textarea>
-<p><?= __( 'Zadejte popis materiálů, z kterých je hračka vyrobena (maximálně 50 znaků).' ) ?></p>
+<fieldset class="toy-material-metabox toy-main-metabox">
+	<label class="screen-reader-text" for="toy_material"><?= __( 'Použitý materiál:', DonkyCz::SLUG ) ?></label>
+	<textarea id="toy_material" name="toy_material" cols="40" rows="1"><?= $material ?></textarea>
+	<p><?= __( 'Zadejte popis materiálů, z kterých je hračka vyrobena (maximálně 50 znaků).' ) ?></p>
+</fieldset>
 <?php
 	}
 
@@ -153,9 +157,11 @@ class DonkyCz_Admin {
 	public function toy_metabox_dimensions( $post ) {
 		$dimensions = get_post_meta( $post->ID, 'toy_dimensions', true );
 ?>
-<label class="screen-reader-text" for="toy_dimensions"><?= __( 'Rozměry hračky:', DonkyCz::SLUG ) ?></label>
-<textarea id="toy_dimensions" name="toy_dimensions" cols="40" rows="1"><?= $dimensions ?></textarea>
-<p><?= __( 'Zadejte rozměry hračky (maximálně 25 znaků).' ) ?></p>
+<fieldset class="toy-dimensions-metabox toy-main-metabox">
+	<label class="screen-reader-text" for="toy_dimensions"><?= __( 'Rozměry hračky:', DonkyCz::SLUG ) ?></label>
+	<textarea id="toy_dimensions" name="toy_dimensions" cols="40" rows="1"><?= $dimensions ?></textarea>
+	<p><?= __( 'Zadejte rozměry hračky (maximálně 25 znaků).' ) ?></p>
+</fieldset>
 <?php
 	}
 
@@ -169,7 +175,7 @@ class DonkyCz_Admin {
 	public function toy_metabox_price( $post ) {
 		$price = get_post_meta( $post->ID, 'toy_price', true );
 ?>
-<fieldset class="toy-price-metabox">
+<fieldset class="toy-price-metabox toy-side-metabox">
 	<p>
 		<label for="toy_price"><?= __( 'Cena:', DonkyCz::SLUG ) ?></label>
 		<input type="number" name="toy_price" id="toy_price" value="<?= $price ?>" min="0" step="1" />
@@ -189,7 +195,7 @@ class DonkyCz_Admin {
 	public function toy_metabox_stock( $post ) {
 		$stock = get_post_meta( $post->ID, 'toy_stock', true );
 ?>
-<fieldset class="toy-stock-metabox">
+<fieldset class="toy-stock-metabox toy-side-metabox">
 	<p>
 		<label for="toy_stock"><?= __( 'Skladem:', DonkyCz::SLUG ) ?></label>
 		<input type="number" name="toy_stock" id="toy_stock" value="<?= $stock ?>" min="0" step="1" />
@@ -239,21 +245,23 @@ class DonkyCz_Admin {
 	 * Change the columns for the toys table.
 	 *
 	 * @since 0.1
-	 * @param array $cols
+	 * @param array $columns
 	 * @return array
 	 */
-	public function toy_list_manage_posts_columns( $cols ) {
-		$cols = array(
-			'cb' => '<input type="checkbox">',
-			'title' => __( 'Název hračky', DonkyCz::SLUG ),
-			'toy_description' => __( 'Krátký popis', DonkyCz::SLUG ),
-			'toy_material' => __( 'Použitý materiál', DonkyCz::SLUG ),
-			'toy_dimensions' => __( 'Rozměry hračky', DonkyCz::SLUG ),
-			'toy_price' => __( 'Cena', DonkyCz::SLUG ),
-			'toy_stock' => __( 'Sklad', DonkyCz::SLUG ),
-			DonkyCz_Taxonomy_Toy_Category::NAME => __( 'Kategorie', DonkyCz::SLUG )
-		);
-		return $cols;
+	public function toy_list_manage_posts_columns( $columns ) {
+		/*array(4) {
+		  ["cb"]=> string(25) "<input type="checkbox" />"
+		  ["title"]=> string(6) "Název"
+		  ["taxonomy-toy_category"]=> string(17) "Kategorie hraček"
+		  ["date"]=> string(5) "Datum"
+		}*/
+		$columns['toy_description'] = __( 'Krátký popis', DonkyCz::SLUG );
+		$columns['toy_material'] = __( 'Použitý materiál', DonkyCz::SLUG );
+		$columns['toy_dimensions'] = __( 'Rozměry hračky', DonkyCz::SLUG );
+		$columns['toy_price'] = __( 'Cena', DonkyCz::SLUG );
+		$columns['toy_stock'] = __( 'Sklad', DonkyCz::SLUG );
+
+		return $columns;
 	}
 
 	/**
@@ -298,14 +306,6 @@ class DonkyCz_Admin {
 					echo $stock . ' ks';
 				}
 				break;
-
-			case DonkyCz_Taxonomy_Toy_Category::NAME:
-				//$taxonomy = get_taxonomy( DonkyCz_Taxonomy_Toy_Category::NAME );
-				$terms = get_the_terms( $post_id, DonkyCz_Taxonomy_Toy_Category::NAME );
-				foreach ($terms as $term) { 
-					echo $term->name . ' ';
-				}
-				break;
 		}
 	}
 
@@ -313,15 +313,18 @@ class DonkyCz_Admin {
 	 * Make our columns in toys table sortable.
 	 *
 	 * @since 0.1
+	 * @param array $columns
 	 * @return array
 	 */
-	public function toy_list_manage_sortable_columns() {
-		return array(
-			'title' => 'title',
-			'toy_price' => 'toy_price',
-			'toy_stock' => 'toy_stock',
-			DonkyCz_Taxonomy_Toy_Category::NAME => DonkyCz_Taxonomy_Toy_Category::NAME
-		);
+	public function toy_list_manage_sortable_columns( $columns ) {
+		$columns['toy_description'] = 'toy_description';
+		$columns['toy_material'] = 'toy_material';
+		$columns['toy_dimensions'] = 'toy_dimensions';
+		$columns['toy_price'] = 'toy_price';
+		$columns['toy_stock'] = 'toy_stock';
+		$columns['taxonomy-' . DonkyCz_Taxonomy_Toy_Category::NAME] = DonkyCz_Taxonomy_Toy_Category::NAME;
+
+		return $columns;
 	}
 
 	/**

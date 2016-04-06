@@ -3,7 +3,9 @@
  * included in this file.
  */
 
-#toy_description, #toy_material {
+fieldset.toy-main-metabox #toy_description, 
+fieldset.toy-main-metabox #toy_material, 
+fieldset.toy-main-metabox #toy_dimensions {
 	display: block;
 	margin: 12px 0px 0px;
 	height: 4em;

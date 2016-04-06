@@ -58,6 +58,7 @@ class DonkyCz_Custom_Post_Type_Toy {
 			'menu_icon' => plugin_dir_url( dirname( __FILE__ ) . 'odwp-donkycz-plugin.php' ) . 'icon-20.png',
 			'supports' => array( 'title', 'thumbnail', 'revisions' ),
 			'taxonomies' => array(),//array( 'DonkyCz_Taxonomy_Toy_Category::NAME' )
+			// Note: Taxonomy is registered for this post type in its own class `DonkyCz_Taxonomy_Toy_Category`
 			'has_archive' => true
 		);
 
