@@ -109,7 +109,9 @@ class DonkyCz {
 			$plugin_dir . 'public/class-donkycz-public.php',
 			// Custom post type and its taxonomy
 			$plugin_dir . 'includes/class-donkycz-custom-post-type-toy.php',
-			$plugin_dir . 'includes/class-donkycz-taxonomy-toy-category.php'
+			$plugin_dir . 'includes/class-donkycz-taxonomy-toy-category.php',
+			// Contact form shortcode
+			$plugin_dir . 'includes/class-donkycz-contact-form-shortcode.php'
 		);
 
 		foreach ( $main_files as $file ) {
@@ -178,6 +180,10 @@ class DonkyCz {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		$contact_form = new DonkyCz_Contact_Form_Shortcode();
+
+		$this->loader->add_action( 'init', $contact_form, 'init' );
 	}
 
 	/**
