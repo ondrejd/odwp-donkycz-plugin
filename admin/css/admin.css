@@ -3,6 +3,7 @@
  * included in this file.
  */
 
+/* Custom styles for toy metaboxes. */
 fieldset.toy-main-metabox #toy_description, 
 fieldset.toy-main-metabox #toy_material, 
 fieldset.toy-main-metabox #toy_dimensions {
@@ -11,4 +12,6 @@ fieldset.toy-main-metabox #toy_dimensions {
 	height: 4em;
 	width: 100%;
 }
-#toy_stock { width: 155px; }
+fieldset.toy-side-metabox #toy_stock {
+	width: 155px;
+}

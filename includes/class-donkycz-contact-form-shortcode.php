@@ -50,7 +50,7 @@ class DonkyCz_Contact_Form_Shortcode {
 	 * @return array
 	 */
 	public function register_button( $buttons ) {
-		array_push( $buttons, '|', 'contactform' );
+		array_push( $buttons, '|', 'donkycz' );
 
 		return $buttons;
 	}
@@ -63,7 +63,7 @@ class DonkyCz_Contact_Form_Shortcode {
 	 * @return array
 	 */
 	public function register_plugin( $plugins ) {
-		$plugins['contactform'] = plugin_dir_url( dirname ( __FILE__ ) ) . '/admin/js/contactform.js';
+		$plugins['donkycz'] = plugin_dir_url( dirname ( __FILE__ ) ) . '/admin/js/contactform.js';
 
 		return $plugins;
 	}

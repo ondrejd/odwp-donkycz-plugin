@@ -3,32 +3,41 @@
  *
  * @since 0.1
  * @link https://github.com/ondrejd/odwp-donkycz-plugin
+ *
+ * @todo Rename this file (because it will be not just contact form button)!
+ * @todo Translate all strings!
  */
 (function() {
-	tinymce.create('tinymce.plugins.contactform', {
+	tinymce.create('tinymce.plugins.donkycz', {
 		init : function(editor, url) {
-			editor.addButton('contactform', {
-				// TODO Translate this!
-				title : 'Contact form',
-				// TODO image : url + '/contactformbutton.png',
-				onclick : function() {
-					editor.execCommand('mceInsertContent', false, '[contact-form]');
-				}
+			editor.addButton('donkycz', {
+				title: 'Donky.cz',
+				image: url + '/../../icon-20.png',
+				type: 'menubutton',
+				menu: [
+					{
+						text: 'Contact Form',
+						//icon: 'icon dashicons-edit',
+						onclick: function(event) {
+							event.stopPropagation();
+							editor.execCommand('mceInsertContent', false, '[contact-form]');
+						}
+					}
+				]
 			});
 		},
 		createControl : function(n, cm) {
 			return null;
 		},
 		getInfo : function() {
-			// TODO Translate this!
 			return {
-				longname : 'Contact Form',
-				author : 'Ondřej Doněk',
-				authorurl : 'http://ondrejd.info/',
-				infourl : 'https://github.com/ondrejd/odwp-donkycz-plugin',
-				version : '1.0'
+				longname: 'Donky.cz',
+				author: 'Ondřej Doněk',
+				authorurl: 'http://ondrejd.info/',
+				infourl: 'https://github.com/ondrejd/odwp-donkycz-plugin',
+				version: '1.0'
 			};
 		}
 	});
-	tinymce.PluginManager.add('contactform', tinymce.plugins.contactform);
+	tinymce.PluginManager.add('donkycz', tinymce.plugins.donkycz);
 })();
