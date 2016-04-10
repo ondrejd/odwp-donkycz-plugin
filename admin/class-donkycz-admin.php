@@ -121,6 +121,7 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
+	 * @uses plugin_dir_path()
 	 */
 	public function toy_metabox_description( $post ) {
 		$description = get_post_meta( $post->ID, 'toy_description', true );
@@ -134,6 +135,7 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
+	 * @uses plugin_dir_path()
 	 */
 	public function toy_metabox_material( $post ) {
 		$material = get_post_meta( $post->ID, 'toy_material', true );
@@ -147,6 +149,7 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
+	 * @uses plugin_dir_path()
 	 */
 	public function toy_metabox_dimensions( $post ) {
 		$dimensions = get_post_meta( $post->ID, 'toy_dimensions', true );
@@ -160,7 +163,7 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
-     * @todo Use partial!
+	 * @uses plugin_dir_path()
 	 */
 	public function toy_metabox_price( $post ) {
 		$price = get_post_meta( $post->ID, 'toy_price', true );
@@ -174,7 +177,7 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
-     * @todo Use partial!
+	 * @uses plugin_dir_path()
 	 */
 	public function toy_metabox_stock( $post ) {
 		$stock = get_post_meta( $post->ID, 'toy_stock', true );
