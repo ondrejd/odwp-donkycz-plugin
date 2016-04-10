@@ -1,11 +1,16 @@
 <?php
 /**
- * Register all actions and filters for the plugin
+ * Register all actions and filters for the plugin.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\includes
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
+ * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
+ * @link https://bitbucket.com/ondrejd/odwp-donkycz-plugin
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/includes
  */
+
+if ( !class_exists( 'DonkyCz_Loader' ) ):
 
 /**
  * Register all actions and filters for the plugin.
@@ -15,12 +20,11 @@
  * run function to execute the list of actions and filters.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\includes
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/includes
  * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz_Loader {
-
 	/**
 	 * The array of actions registered with WordPress.
 	 *
@@ -45,10 +49,8 @@ class DonkyCz_Loader {
 	 * @since 0.1
 	 */
 	public function __construct() {
-
 		$this->actions = array();
 		$this->filters = array();
-
 	}
 
 	/**
@@ -94,7 +96,6 @@ class DonkyCz_Loader {
 	 * @return   array                                  The collection of actions and filters registered with WordPress.
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
-
 		$hooks[] = array(
 			'hook'          => $hook,
 			'component'     => $component,
@@ -104,7 +105,6 @@ class DonkyCz_Loader {
 		);
 
 		return $hooks;
-
 	}
 
 	/**
@@ -113,7 +113,6 @@ class DonkyCz_Loader {
 	 * @since 0.1
 	 */
 	public function run() {
-
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
@@ -121,7 +120,7 @@ class DonkyCz_Loader {
 		foreach ( $this->actions as $hook ) {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
-
 	}
-
 }
+
+endif;

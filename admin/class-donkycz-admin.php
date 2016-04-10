@@ -1,12 +1,16 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\admin
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
+ * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
+ * @link https://bitbucket.com/ondrejd/odwp-donkycz-plugin
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/admin
  */
+
+if ( !class_exists( 'DonkyCz_Admin' ) ):
 
 /**
  * The admin-specific functionality of the plugin.
@@ -15,8 +19,8 @@
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\admin
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/admin
  * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz_Admin {
@@ -120,13 +124,8 @@ class DonkyCz_Admin {
 	 */
 	public function toy_metabox_description( $post ) {
 		$description = get_post_meta( $post->ID, 'toy_description', true );
-?>
-<fieldset class="toy-description-metabox toy-main-metabox">
-	<label class="screen-reader-text" for="toy_description"><?= __( 'Popis:', DonkyCz::SLUG ) ?></label>
-	<textarea id="toy_description" name="toy_description" cols="40" rows="1"><?= $description ?></textarea>
-	<p><?= __( 'Zadejte stručný popis hračky (maximálně 50 znaků).' ) ?></p>
-</fieldset>
-<?php
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-description.php';
 	}
 
 	/**
@@ -138,13 +137,8 @@ class DonkyCz_Admin {
 	 */
 	public function toy_metabox_material( $post ) {
 		$material = get_post_meta( $post->ID, 'toy_material', true );
-?>
-<fieldset class="toy-material-metabox toy-main-metabox">
-	<label class="screen-reader-text" for="toy_material"><?= __( 'Použitý materiál:', DonkyCz::SLUG ) ?></label>
-	<textarea id="toy_material" name="toy_material" cols="40" rows="1"><?= $material ?></textarea>
-	<p><?= __( 'Zadejte popis materiálů, z kterých je hračka vyrobena (maximálně 50 znaků).' ) ?></p>
-</fieldset>
-<?php
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-material.php';
 	}
 
 	/**
@@ -156,13 +150,8 @@ class DonkyCz_Admin {
 	 */
 	public function toy_metabox_dimensions( $post ) {
 		$dimensions = get_post_meta( $post->ID, 'toy_dimensions', true );
-?>
-<fieldset class="toy-dimensions-metabox toy-main-metabox">
-	<label class="screen-reader-text" for="toy_dimensions"><?= __( 'Rozměry hračky:', DonkyCz::SLUG ) ?></label>
-	<textarea id="toy_dimensions" name="toy_dimensions" cols="40" rows="1"><?= $dimensions ?></textarea>
-	<p><?= __( 'Zadejte rozměry hračky (maximálně 25 znaků).' ) ?></p>
-</fieldset>
-<?php
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-dimensions.php';
 	}
 
 	/**
@@ -171,18 +160,12 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
+     * @todo Use partial!
 	 */
 	public function toy_metabox_price( $post ) {
 		$price = get_post_meta( $post->ID, 'toy_price', true );
-?>
-<fieldset class="toy-price-metabox toy-side-metabox">
-	<p>
-		<label for="toy_price"><?= __( 'Cena:', DonkyCz::SLUG ) ?></label>
-		<input type="number" name="toy_price" id="toy_price" value="<?= $price ?>" min="0" step="1" />
-		<span><?= __( 'Kč', DonkyCz::SLUG ) ?></span>
-	</p>
-</fieldset>
-<?php
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-price.php';
 	}
 
 	/**
@@ -191,18 +174,12 @@ class DonkyCz_Admin {
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
+     * @todo Use partial!
 	 */
 	public function toy_metabox_stock( $post ) {
 		$stock = get_post_meta( $post->ID, 'toy_stock', true );
-?>
-<fieldset class="toy-stock-metabox toy-side-metabox">
-	<p>
-		<label for="toy_stock"><?= __( 'Skladem:', DonkyCz::SLUG ) ?></label>
-		<input type="number" name="toy_stock" id="toy_stock" value="<?= $stock ?>" min="0" step="1" />
-		<span><?= __( 'ks', DonkyCz::SLUG ) ?></span>
-	</p>
-</fieldset>
-<?php
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-stock.php';
 	}
 
 	/**
@@ -220,7 +197,7 @@ class DonkyCz_Admin {
 
 		// Check user privileges
 		if ( !current_user_can( 'edit_post', $post_id ) ) {
-			// XXX Print admin notice!
+			// TODO Print admin notice!
 			return;
 		}
 
@@ -402,3 +379,5 @@ class DonkyCz_Admin {
 		//}
 	}
 }
+
+endif;

@@ -6,10 +6,14 @@
  * public-facing side of the site and the admin area.
  *
  * @since 0.1
- * @link https://github.com/ondrejd/odwp-donkycz-plugin
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
+ * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
+ * @link https://bitbucket.com/ondrejd/odwp-donkycz-plugin
  * @package odwp-donkycz-plugin
- * @subpackage odwp-donkycz-plugin\includes
+ * @subpackage odwp-donkycz-plugin/includes
  */
+
+if ( !class_exists( 'DonkyCz' ) ):
 
 /**
  * The core plugin class.
@@ -21,8 +25,8 @@
  * version of the plugin.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\includes
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/includes
  * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz {
@@ -245,5 +249,6 @@ class DonkyCz {
 	public function get_version() {
 		return $this->version;
 	}
-
 }
+
+endif;

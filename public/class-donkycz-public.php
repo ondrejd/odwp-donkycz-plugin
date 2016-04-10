@@ -1,12 +1,16 @@
 <?php
-
 /**
  * The public-facing functionality of the plugin.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\public
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
+ * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
+ * @link https://bitbucket.com/ondrejd/odwp-donkycz-plugin
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/public
  */
+
+if ( !class_exists( 'DonkyCz_Public' ) ):
 
 /**
  * The public-facing functionality of the plugin.
@@ -15,8 +19,8 @@
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @since 0.1
- * @package odwp-donky_cz
- * @subpackage odwp-donky_cz\public
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/public
  * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz_Public {
@@ -68,3 +72,5 @@ class DonkyCz_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/public.js', array( 'jquery' ), $this->version, false );
 	}
 }
+
+endif;

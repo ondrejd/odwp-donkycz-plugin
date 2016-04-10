@@ -1,19 +1,24 @@
 <?php
 /**
- * odwp-courses
- *
- * @author Ondřej Doněk, <ondrejd@gmail.com>
- * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
- * @link https://bitbucket.com/ondrejd/odwp-courses
- * @package odwp-courses
- */
-
-if (!class_exists('DonkyCz_Taxonomy_Toy_Category')):
-
-/**
- * Class implementing course category taxonomy.
+ * Toy category taxonomy.
  *
  * @since 0.1
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
+ * @license Mozilla Public License 2.0 https://www.mozilla.org/MPL/2.0/
+ * @link https://bitbucket.com/ondrejd/odwp-donkycz-plugin
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/includes
+ */
+
+if ( !class_exists( 'DonkyCz_Taxonomy_Toy_Category' ) ):
+
+/**
+ * Class implementing toy category taxonomy.
+ *
+ * @since 0.1
+ * @package odwp-donkycz-plugin
+ * @subpackage odwp-donkycz-plugin/includes
+ * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz_Taxonomy_Toy_Category {
   /**

@@ -3,21 +3,18 @@
  *
  * @since 0.1
  * @link https://github.com/ondrejd/odwp-donkycz-plugin
- *
  * @todo Rename this file (because it will be not just contact form button)!
- * @todo Translate all strings!
  */
 (function() {
 	tinymce.create('tinymce.plugins.donkycz', {
 		init : function(editor, url) {
 			editor.addButton('donkycz', {
-				title: 'Donky.cz',
+				title: editor.getLang('odwp-donkycz-plugin.button_title'),
 				image: url + '/../../icon-20.png',
 				type: 'menubutton',
 				menu: [
 					{
-						text: 'Contact Form',
-						//icon: 'icon dashicons-edit',
+						text: editor.getLang('odwp-donkycz-plugin.menuitem1_text'),
 						onclick: function(event) {
 							event.stopPropagation();
 							editor.execCommand('mceInsertContent', false, '[contact-form]');

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -14,7 +13,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Plugin pro Donky.cz
- * Plugin URI:        http://github.com/ondrejd/odwp-donky_cz/
+ * Plugin URI:        https://github.com/ondrejd/odwp-donkycz-plugin
  * Description:       Plugin with all necessary functionality for site Donky.cz.
  * Version:           0.1
  * Author:            Ondřej Doněk
