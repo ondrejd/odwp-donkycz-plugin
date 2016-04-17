@@ -63,7 +63,7 @@ class DonkyCz_Contact_Form_Shortcode {
 	 * @since 0.1
 	 * @param array $plugins
 	 * @return array
-     * @uses plugin_dir_url()
+	 * @uses plugin_dir_url()
 	 */
 	public function register_plugin( $plugins ) {
 		$plugins['donkycz'] = plugin_dir_url( dirname( __FILE__ ) ) . 'admin/js/tinymce.js';
@@ -76,7 +76,7 @@ class DonkyCz_Contact_Form_Shortcode {
      * @since 0.1
      * @param array $locales
      * @return array
-     * @uses plugin_dir_path()
+	 * @uses plugin_dir_path()
      */
     public function add_button_lang( $locales ) {
         $locales['odwp-donkycz-btn'] = plugin_dir_path( dirname( __FILE__ ) ) . '/admin/tinymce-i18n.php';
@@ -88,10 +88,10 @@ class DonkyCz_Contact_Form_Shortcode {
 	 * 
 	 * @since 0.1
 	 * @return string
-	 * @uses wp_nonce()
+	 * @uses plugin_dir_path()
 	 */
 	public function render() {
-		return '<code>XXX</code>';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . '/public/partials/contact-form.php';
 	}
 }
 

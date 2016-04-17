@@ -64,6 +64,23 @@ class DonkyCz_Custom_Post_Type_Toy {
 
 		register_post_type( self::NAME, $args );
 	}
+
+	/**
+	 * Returns toys.
+	 *
+	 * @static
+	 * @since 0.1
+	 * @return WP_Query
+	 */
+	public static function get_toys() {
+		$args = array(
+			'post_type' => self::NAME,
+			'no_paging' => true,
+			'posts_per_page' => -1
+		);
+
+		return new WP_Query( $args );
+	}
 }
 
 endif;
