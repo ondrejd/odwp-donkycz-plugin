@@ -39,12 +39,6 @@ class DonkyCz_Admin {
 	private $version;
 
 	/**
-	 * @since 0.1
-	 * @access private
-	 * @var array $screens The screens ({@see WP_Screen}) provided by the plugin.
-	 */
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 0.1
@@ -103,7 +97,7 @@ class DonkyCz_Admin {
 
 	/**
 	 * Add meta boxes for courses.
-	 * 
+	 *
 	 * @since 0.1
 	 * @uses add_meta_box()
 	 */
@@ -113,11 +107,12 @@ class DonkyCz_Admin {
 		add_meta_box( 'toy_dimensions_metabox', __( 'Rozměry hračky', DonkyCz::SLUG ), array( $this, 'toy_metabox_dimensions' ), 'toy', 'normal', 'high' );
 		add_meta_box( 'toy_price_metabox', __( 'Cena', DonkyCz::SLUG ), array( $this, 'toy_metabox_price' ), 'toy', 'side', 'core' );
 		add_meta_box( 'toy_stock_metabox', __( 'Skladem', DonkyCz::SLUG ), array( $this, 'toy_metabox_stock' ), 'toy', 'side', 'default' );
+		add_meta_box( 'toy_order_metabox', __( 'Pořadí', DonkyCz::SLUG ), array( $this, 'toy_metabox_order' ), 'toy', 'side', 'default' );
 	}
 
 	/**
 	 * Renders content for `toy_description_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
@@ -131,7 +126,7 @@ class DonkyCz_Admin {
 
 	/**
 	 * Renders content for `toy_material_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
@@ -145,7 +140,7 @@ class DonkyCz_Admin {
 
 	/**
 	 * Renders content for `toy_dimensions_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
@@ -159,7 +154,7 @@ class DonkyCz_Admin {
 
 	/**
 	 * Renders content for `toy_price_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
@@ -173,7 +168,7 @@ class DonkyCz_Admin {
 
 	/**
 	 * Renders content for `toy_stock_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param WP_Post $post
 	 * @uses get_post_meta()
@@ -186,8 +181,22 @@ class DonkyCz_Admin {
 	}
 
 	/**
+	 * Renders content for `toy_order_metabox`.
+	 *
+	 * @since 0.1
+	 * @param WP_Post $post
+	 * @uses get_post_meta()
+	 * @uses plugin_dir_path()
+	 */
+	public function toy_metabox_order( $post ) {
+		$order = get_post_meta( $post->ID, 'toy_order', true );
+
+		include_once plugin_dir_path( __FILE__ ) . 'partials/metabox-order.php';
+	}
+
+	/**
 	 * Saves values from `course_fio_metabox`.
-	 * 
+	 *
 	 * @since 0.1
 	 * @param integer $post_id
 	 * @return void
@@ -219,6 +228,9 @@ class DonkyCz_Admin {
 		// Stock
 		$stock = filter_input( INPUT_POST, 'toy_stock' );
 		$this->update_meta_key( $post_id, 'toy_stock', $stock );
+		// Order
+		$order = filter_input( INPUT_POST, 'toy_order' );
+		$this->update_meta_key( $post_id, 'toy_order', $order );
 	}
 
 	/**
@@ -240,6 +252,7 @@ class DonkyCz_Admin {
 		$columns['toy_dimensions'] = __( 'Rozměry hračky', DonkyCz::SLUG );
 		$columns['toy_price'] = __( 'Cena', DonkyCz::SLUG );
 		$columns['toy_stock'] = __( 'Sklad', DonkyCz::SLUG );
+		$columns['toy_order'] = __( 'Pořadí', DonkyCz::SLUG );
 		$columns['toy_image'] = __( 'Obrázek', DonkyCz::SLUG );
 
 		return $columns;
@@ -273,19 +286,24 @@ class DonkyCz_Admin {
 			case 'toy_price':
 				$price = get_post_meta( $post_id, 'toy_price', true );
 				if ( empty( $price ) ) {
-					echo '0 Kč';
+					echo __( '0 Kč', DonkyCz::SLUG );
 				} else {
-					echo $price . ' Kč';
+					printf( __( '%s Kč', DonkyCz::SLUG ), $price );
 				}
 				break;
 
 			case 'toy_stock':
 				$stock = get_post_meta( $post_id, 'toy_stock', true );
 				if ( empty( $stock ) ) {
-					echo '0 ks';
+					echo __( '0 ks', DonkyCz::SLUG );
 				} else {
-					echo $stock . ' ks';
+					printf( __( '%s ks', DonkyCz::SLUG ), $stock );
 				}
+				break;
+
+			case 'toy_order':
+				$order = get_post_meta( $post_id, 'toy_order', true );
+				echo ( empty( $order ) ) ? '0' : $order;
 				break;
 
 			case 'toy_image':
@@ -310,6 +328,7 @@ class DonkyCz_Admin {
 		$columns['toy_dimensions'] = 'toy_dimensions';
 		$columns['toy_price'] = 'toy_price';
 		$columns['toy_stock'] = 'toy_stock';
+		$columns['toy_order'] = 'toy_order';
 		$columns['taxonomy-' . DonkyCz_Taxonomy_Toy_Category::NAME] = DonkyCz_Taxonomy_Toy_Category::NAME;
 
 		return $columns;
