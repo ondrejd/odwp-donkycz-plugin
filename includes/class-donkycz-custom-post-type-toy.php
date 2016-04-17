@@ -81,6 +81,25 @@ class DonkyCz_Custom_Post_Type_Toy {
 
 		return new WP_Query( $args );
 	}
+
+	/**
+	 * Returns image for the given toy.
+	 *
+	 * @static
+	 * @since 0.1
+	 * @param integer $toy_id
+	 * @return string
+	 * @uses get_post_thumbnail_id()
+	 * @uses wp_get_attachment_image_src()
+	 */
+	public static function get_toy_image( $toy_id ) {
+		$image_id = get_post_thumbnail_id( $toy_id );
+
+		if ( $image_id ) {
+			$image = wp_get_attachment_image_src( $image_id, 'featured_preview' );
+			return $image[0];
+		}
+	}
 }
 
 endif;

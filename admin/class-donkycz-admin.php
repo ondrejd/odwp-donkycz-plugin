@@ -240,6 +240,7 @@ class DonkyCz_Admin {
 		$columns['toy_dimensions'] = __( 'Rozměry hračky', DonkyCz::SLUG );
 		$columns['toy_price'] = __( 'Cena', DonkyCz::SLUG );
 		$columns['toy_stock'] = __( 'Sklad', DonkyCz::SLUG );
+		$columns['toy_image'] = __( 'Obrázek', DonkyCz::SLUG );
 
 		return $columns;
 	}
@@ -284,6 +285,13 @@ class DonkyCz_Admin {
 					echo '0 ks';
 				} else {
 					echo $stock . ' ks';
+				}
+				break;
+
+			case 'toy_image':
+				$image = DonkyCz_Custom_Post_Type_Toy::get_toy_image( $post_id );
+				if ( $image ) {
+					echo '<img src="' . $image . '" style="width: 70px;" />';
 				}
 				break;
 		}
