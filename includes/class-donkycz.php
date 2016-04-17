@@ -30,7 +30,14 @@ if ( !class_exists( 'DonkyCz' ) ):
  * @author Ondřej Doněk <ondrejd@gmail.com>
  */
 class DonkyCz {
+	/**
+	 * @const string
+	 */
 	const SLUG = 'odwp-donkycz-plugin';
+
+	/**
+	 * @const string
+	 */
 	const VERSION = '0.1';
 
 	/**
