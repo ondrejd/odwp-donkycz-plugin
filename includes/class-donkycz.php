@@ -172,11 +172,8 @@ class DonkyCz {
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin, 'toy_list_restrict_listings_by_category' );
 		$this->loader->add_action( 'contextual_help', $plugin_admin, 'toy_list_contextual_help', 10, 3 );
 
-		/**
-		 * Hide some columns by default
-		 * @link https://wordpress.org/support/topic/default-custom-post-column-to-off-in-screen-options
-		 */
-		$this->loader->add_action( 'wp_login', $plugin_admin, 'toy_list_set_default_hidden_columns' );
+		// Hide some columns in toys list by default
+		$this->loader->add_action( 'wp_login', $plugin_admin, 'toy_list_set_default_hidden_columns', 10, 2 );
 	}
 
 	/**

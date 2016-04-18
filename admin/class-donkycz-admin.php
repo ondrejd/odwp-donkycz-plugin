@@ -390,23 +390,32 @@ class DonkyCz_Admin {
 	}
 
 	/**
-	 * ...
+	 * Hide some columns in toys list by default.
+	 *
+	 * It's done pretty simply - after user login we check if he has set
+	 * option `manageedit-toycolumnshidden` and if not we set it with 
+	 * our default values.
 	 *
 	 * @since 0.1
+	 * @param string $user_login
+	 * @param WP_User $user
+	 * @uses get_user_option()
+	 * @uses update_user_option()
 	 */
-	public function toy_list_set_default_hidden_columns( $user_id ) {
-		$hidden_columns = get_user_option( 'manageedit-toycolumnshidden' );
-		if ( !is_array( $hidden_columns ) ) {
-			$hidden_columns = array();
+	public function toy_list_set_default_hidden_columns( $user_login, $user ) {
+		$hidden_columns = get_user_option( 'manageedit-toycolumnshidden', $user->ID );
+
+		if ( is_array( $hidden_columns ) ) {
+			return;
 		}
 
-		//if ( !in_array('id', $hidden_columns ) ){
-			$hidden_columns[] = 'toy_description';
-			$hidden_columns[] = 'toy_price';
-			$hidden_columns[] = 'toy_stock';
+		$hidden_columns = array();
+		$hidden_columns[] = 'date';
+		$hidden_columns[] = 'toy_description';
+		$hidden_columns[] = 'toy_price';
+		$hidden_columns[] = 'toy_stock';
 
-			add_user_meta( $user_id, 'manageedit-toycolumnshidden', $hidden_columns );
-		//}
+		update_user_option( $user->ID, 'manageedit-toycolumnshidden', $hidden_columns, true );
 	}
 }
 
