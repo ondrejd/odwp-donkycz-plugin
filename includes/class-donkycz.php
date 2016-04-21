@@ -171,7 +171,6 @@ class DonkyCz {
 		$this->loader->add_filter( 'manage_edit-toy_sortable_columns', $plugin_admin, 'toy_list_manage_sortable_columns' );
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin, 'toy_list_restrict_listings_by_category' );
 		$this->loader->add_action( 'contextual_help', $plugin_admin, 'toy_list_contextual_help', 10, 3 );
-
 		// Hide some columns in toys list by default
 		$this->loader->add_action( 'wp_login', $plugin_admin, 'toy_list_set_default_hidden_columns', 10, 2 );
 	}
@@ -186,22 +185,16 @@ class DonkyCz {
 	private function define_public_hooks() {
 		$plugin_public = new DonkyCz_Public( $this->get_plugin_name(), $this->get_version() );
 
+		// Enqueue styles and scripts
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+		// Initialize our contact form short code
 		$contact_form = new DonkyCz_Contact_Form_Shortcode();
-
 		$this->loader->add_action( 'init', $contact_form, 'init' );
-	}
 
-	/**
-	 * @since 0.1
-	 * @access private
-	 */
-	private function define_taxonomies() {
-		$taxonomy = new DonkyCz_Taxonomy_Toy_Category();
-
-		$this->loader->add_action( 'init', $taxonomy, 'init' );
+		// Add custom post type to WP front-page
+		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'show_on_front_page' );
 	}
 
 	/**
@@ -211,7 +204,19 @@ class DonkyCz {
 	private function define_custom_post_types() {
 		$custom_post_type = new DonkyCz_Custom_Post_Type_Toy();
 
+		// Initialize custom post type
 		$this->loader->add_action( 'init', $custom_post_type, 'init' );
+	}
+
+	/**
+	 * @since 0.1
+	 * @access private
+	 */
+	private function define_taxonomies() {
+		$taxonomy = new DonkyCz_Taxonomy_Toy_Category();
+
+		// Initialize taxonomy
+		$this->loader->add_action( 'init', $taxonomy, 'init' );
 	}
 
 	/**

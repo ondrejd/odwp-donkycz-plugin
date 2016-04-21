@@ -58,6 +58,8 @@ class DonkyCz_Public {
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
 	 * @since 0.1
+	 * @uses wp_enqueue_script()
+	 * @uses plugin_dir_url()
 	 */
 	public function enqueue_styles() {
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/public.css', array(), $this->version, 'all' );
@@ -67,9 +69,27 @@ class DonkyCz_Public {
 	 * Register the JavaScript for the public-facing side of the site.
 	 *
 	 * @since 0.1
+	 * @uses wp_enqueue_script()
+	 * @uses plugin_dir_url()
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/public.js', array( 'jquery' ), $this->version, false );
+	}
+
+	/**
+	 * Show just our custom post type on WP front page.
+	 *
+	 * @since 1.0
+	 * @param WP_Query $query
+	 * @return WP_Query
+	 * @uses is_home()
+	 */
+	public function show_on_front_page( $query ) {
+		if ( is_home() && $query->is_main_query() ) {
+			$query->set( 'post_type', array( DonkyCz_Custom_Post_Type_Toy::NAME ) );
+		}
+
+		return $query;
 	}
 }
 
