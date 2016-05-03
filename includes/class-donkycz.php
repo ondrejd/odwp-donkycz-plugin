@@ -121,8 +121,9 @@ class DonkyCz {
 			// Custom post type and its taxonomy
 			$plugin_dir . 'includes/class-donkycz-custom-post-type-toy.php',
 			$plugin_dir . 'includes/class-donkycz-taxonomy-toy-category.php',
-			// Contact form shortcode
-			$plugin_dir . 'includes/class-donkycz-contact-form-shortcode.php'
+			// Contact form
+			$plugin_dir . 'includes/class-donkycz-contact-form-shortcode.php',
+			$plugin_dir . 'includes/class-donkycz-contact-form-model.php'
 		);
 
 		foreach ( $main_files as $file ) {
