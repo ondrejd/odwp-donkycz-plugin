@@ -1,6 +1,6 @@
 <?php
 /**
- * The file that defines the core plugin class
+ * The file with contact form shortcode.
  *
  * @since 0.1
  * @author Ondřej Doněk, <ondrejd@gmail.com>
@@ -10,7 +10,7 @@
  * @subpackage odwp-donkycz-plugin/includes
  */
 
-if ( !class_exists( 'DonkyCz_Contact_Form_Shortcode' ) ):
+if ( !class_exists( 'DonkyCz_Contact_Form_Shortcode' ) ) :
 
 /**
  * Class implementing contact form (using WP shortcode).

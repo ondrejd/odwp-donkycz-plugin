@@ -31,7 +31,8 @@ class DonkyCz_Activator {
 	 * @since 0.1
 	 */
 	public static function activate() {
-        // ...
+		//include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-donkycz-contact-form-model.php';
+		DonkyCz_Contact_Form_Model::create_table();
 	}
 }
 
