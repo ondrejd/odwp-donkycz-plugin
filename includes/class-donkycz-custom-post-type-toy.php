@@ -36,7 +36,7 @@ class DonkyCz_Custom_Post_Type_Toy {
 		//echo plugin_dir_url( dirname( __FILE__ ) . 'odwp-donkycz-plugin.php' ) . 'icon-32.png';
 		$labels = array(
 			'name' => _x( 'Hračky', 'post type general name', DonkyCz::SLUG ),
-			'singular_name' => _x( 'Vytvořit hračku', 'post type singular name', DonkyCz::SLUG ),
+			'singular_name' => _x( 'Hračka', 'post type singular name', DonkyCz::SLUG ),
 			'add_new' => _x( 'Přidej novou', 'add new course', DonkyCz::SLUG ),
 			'add_new_item' => __( 'Přidej novou hračku', DonkyCz::SLUG ),
 			'edit_item' => __( 'Edituj hračku', DonkyCz::SLUG ),
