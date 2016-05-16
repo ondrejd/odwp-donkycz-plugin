@@ -2,3 +2,47 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ 
+.contact_form {
+	width: 766px;
+}
+.contact_form .form-row {
+	clear: both;
+	min-height: 30px;
+	padding: 10px 0px 0px 0px;
+	text-align: left;
+	width: 100%;
+}
+.contact_form .form-row .left {
+	float: left;
+	padding-right: 2%;
+	width: 48%;
+}
+.contact_form .form-row .right {
+	float: left;
+	padding-left: 2%;
+	width: 48%;
+}
+.contact_form .form-row label span {
+	display: block;
+}
+.contact_form .form-row label input,
+.contact_form .form-row label select,
+.contact_form .form-row label textarea {
+	display: block;
+	margin: 0 0 0 0;
+	width: 100%;
+}
+.contact_form input[type="submit"] {
+	width: 100px;
+}
+.contact_form .form-row label .description {
+	clear: both;
+	color: #666;
+	display: block;
+	float: none;
+	font-size: 80%;
+	padding: 0px 0px 0px 0px;
+	text-align: left;
+	width: 100%;
+}

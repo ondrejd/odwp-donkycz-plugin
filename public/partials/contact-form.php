@@ -11,38 +11,38 @@
  */
 
 /**
- * @var string $prefix Form elements ID prefix.
+ * These variables are available:
+ *
+ * @var string   $prefix   Form elements ID prefix.
+ * @var WP_Query $toys     Available toys.
  */
-$prefix = 'odwpdcz-';
-
-/**
- * @var WP_Query $toys Available toys.
- */
-$toys = DonkyCz_Custom_Post_Type_Toy::get_toys();
 
 ?>
-<form id="<?= $prefix ?>contact_form" name="contact_form">
-	<p>
-		<label for="<?= $prefix ?>sender">
-			<?= __( 'Jméno a příjmení', DonkyCz::SLUG ) ?><br/>
-			<input type="text" id="<?= $prefix ?>sender" name="sender" class="input" value=""/>
-		</label>
-	</p>
-	<p>
-		<label for="<?= $prefix ?>email">
-			<?= __( 'E-mailová adresa', DonkyCz::SLUG ) ?><br/>
-			<input type="email" id="<?= $prefix ?>email" name="email" class="input" value=""/>
-		</label>
-	</p>
-	<p>
+<form id="<?= $prefix ?>contact_form" name="contact_form" class="contact_form" method="post">
+	<?php wp_nonce_field( 'contact-form', 'cfnonce' ); ?>
+	<div class="form-row">
+		<div class="left">
+			<label for="<?= $prefix ?>sender">
+				<span><?= __( 'Jméno a příjmení', DonkyCz::SLUG ) ?></span>
+				<input type="text" id="<?= $prefix ?>sender" name="sender" class="input" value=""/>
+			</label>
+		</div>
+		<div class="right">
+			<label for="<?= $prefix ?>email">
+				<span><?= __( 'E-mailová adresa', DonkyCz::SLUG ) ?></span>
+				<input type="email" id="<?= $prefix ?>email" name="email" class="input" value=""/>
+			</label>
+		</div>
+	</div>
+	<div class="form-row">
 		<label for="<?= $prefix ?>message">
-			<?= __( 'Chci se zeptat', DonkyCz::SLUG ) ?><br/>
+			<span><?= __( 'Chci se zeptat', DonkyCz::SLUG ) ?></span>
 			<textarea id="<?= $prefix ?>message" name="message" class="input"></textarea>
 		</label>
-	</p>
-	<p>
+	</div>
+	<div class="form-row">
 		<label for="<?= $prefix ?>toy_id">
-			<?= __( 'Vyberte hračku', DonkyCz::SLUG ) ?><br/>
+			<span><?= __( 'Vyberte hračku', DonkyCz::SLUG ) ?></span>
 			<?php if ( $toys->have_posts() ): ?>
 			<select id="<?= $prefix ?>toy_id" name="toy_id" class="input">
 				<?php while ( $toys->have_posts() ) : $toys->the_post(); ?>
@@ -52,16 +52,17 @@ $toys = DonkyCz_Custom_Post_Type_Toy::get_toys();
 			<?php wp_reset_postdata(); ?>
 			<?php endif; ?>
 		</label>
-	</p>
-	<p>
+	</div>
+	<div class="form-row">
 		<label for="<?= $prefix ?>toy_spec">
-			<?= __( 'Specifikace hračky', DonkyCz::SLUG ) ?><br/>
+			<span><?= __( 'Specifikace hračky', DonkyCz::SLUG ) ?></span>
 			<textarea id="<?= $prefix ?>toy_spec" name="toy_spec" class="input"></textarea>
 			<span class="description"><?= __( '(Napište prosím Vaši představu ohledně vzhledu hračky, velikosti, barevnosti, doplňcích apod.)', DonkyCz::SLUG ) ?></span>
 		</label>
-	</p>
-	<p>
-		<!-- TODO Add spinner! -->
-		<input type="submit" value="<?= __( 'Odeslat', DonkyCz::SLUG ) ?>" name="<?= $prefix ?>submit" class="button button-primary"/>
-	</p>
+	</div>
+	<div class="submit-row">
+		<input id="<?= $prefix ?>submit" name="submit" type="submit" value="<?= __( 'Odeslat', DonkyCz::SLUG ) ?>" class="button-primary save alignright"/>
+		<span id="<?= $prefix ?>spinner" class="spinner is-active" style="visibility: collapse;"></span>
+		<div class="clear"></div>
+	</div>
 </form>

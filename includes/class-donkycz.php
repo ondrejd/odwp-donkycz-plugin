@@ -87,6 +87,7 @@ class DonkyCz {
 		$this->define_taxonomies();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_contact_form_shortcode();
 	}
 
 	/**
@@ -122,8 +123,9 @@ class DonkyCz {
 			$plugin_dir . 'includes/class-donkycz-custom-post-type-toy.php',
 			$plugin_dir . 'includes/class-donkycz-taxonomy-toy-category.php',
 			// Contact form
+			$plugin_dir . 'includes/class-donkycz-contact-form-model.php',
 			$plugin_dir . 'includes/class-donkycz-contact-form-shortcode.php',
-			$plugin_dir . 'includes/class-donkycz-contact-form-model.php'
+			$plugin_dir . 'includes/class-donkycz-contact-form-table.php'
 		);
 
 		foreach ( $main_files as $file ) {
@@ -156,10 +158,15 @@ class DonkyCz {
 	 *
 	 * @since 0.1
 	 * @access private
+	 * @uses add_shortcode()
+	 * @uses current_user_can()
+	 * @uses get_user_option()
+	 * @uses add_filter()
 	 */
 	private function define_admin_hooks() {
 		$plugin_admin = new DonkyCz_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		// Scripts and styles
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		// Metaboxes
@@ -190,10 +197,6 @@ class DonkyCz {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-		// Initialize our contact form short code
-		$contact_form = new DonkyCz_Contact_Form_Shortcode();
-		$this->loader->add_action( 'init', $contact_form, 'init' );
-
 		// Add custom post type to WP front-page
 		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'show_on_front_page' );
 	}
@@ -218,6 +221,16 @@ class DonkyCz {
 
 		// Initialize taxonomy
 		$this->loader->add_action( 'init', $taxonomy, 'init' );
+	}
+
+	/**
+	 * @since 0.1
+	 * @access private
+	 */
+	private function define_contact_form_shortcode() {
+		$contact_form = new DonkyCz_Contact_Form_Shortcode();
+
+		$this->loader->add_action( 'init', $contact_form, 'init' );
 	}
 
 	/**
