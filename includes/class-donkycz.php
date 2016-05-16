@@ -101,6 +101,9 @@ class DonkyCz {
 	 * - {@see DonkyCz_Public}. Defines all hooks for the public side of the site.
 	 * - {@see DonkyCz_Custom_Post_Type_Toy}. Defines new custom post type.
 	 * - {@see DonkyCz_Taxonomy_Toy_Category}. Defines new taxonomy for our custom post type.
+	 * - {@see DonkyCz_Contact_Form_Model}. Defines simple data model for contact form.
+	 * - {@see DonkyCz_Contact_Form_Shortcode}. Defines contact form shortcode.
+	 * - {@see DonkyCz_Contact_Form_Table}. Defines data listing table in WP admin.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
