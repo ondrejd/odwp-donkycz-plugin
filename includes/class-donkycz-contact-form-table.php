@@ -184,7 +184,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( empty( $item->email ) ) {
 			return '';
 		}
-		return sprintf( '<a href="mailto:%s">%s</a>', $item->email, $item->email );
+		return sprintf( '<a href="mailto:%1$s">%1$s</a>', $item->email );
 	}
 
 	/**
