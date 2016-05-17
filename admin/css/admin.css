@@ -15,3 +15,10 @@ fieldset.toy-main-metabox #toy_dimensions {
 fieldset.toy-side-metabox #toy_stock {
 	width: 155px;
 }
+
+.read {
+	color: #7a0;
+}
+.not-read {
+	color: #F30;
+}
