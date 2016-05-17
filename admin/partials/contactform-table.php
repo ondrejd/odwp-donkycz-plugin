@@ -25,9 +25,10 @@
 
 	<h1><?php esc_html_e( 'Kontaktní formulář - Odeslaná data', DonkyCz::SLUG ); ?></h1>
 
-<?php
-$table->prepare_items();
-$table->search_box( 'search', 'search_id' );
-$table->display();
-?>
+	<?php
+		$table->prepare_items();
+		$table->search_box( 'search', 'search_id' );
+		$table->display();
+	?>
+
 </div>

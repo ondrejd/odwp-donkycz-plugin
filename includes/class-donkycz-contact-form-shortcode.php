@@ -67,7 +67,7 @@ class DonkyCz_Contact_Form_Shortcode {
 			add_filter( 'mce_buttons', array( $this, 'tinymce_button' ) );
             add_filter( 'mce_external_languages', array( $this, 'tinymce_language' ) );
 		}
-	} // end init()
+	}
 
 	/**
 	 * Return options for contact form shortcode.
@@ -103,7 +103,7 @@ class DonkyCz_Contact_Form_Shortcode {
 		}
 
 		return $options;
-	} // end get_options()
+	}
 
 	/**
 	 * Register menu in WordPress administration.
@@ -137,7 +137,7 @@ class DonkyCz_Contact_Form_Shortcode {
 			$prefix . 'options_page',
 			array( $this, 'options_page' )
 		);
-	} // end admin_menu()
+	}
 
 	/**
 	 * Render options page (in WordPress administration).
@@ -177,7 +177,7 @@ class DonkyCz_Contact_Form_Shortcode {
 
 		// Include view
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . '/admin/partials/contactform-options.php';
-	} // end options_page()
+	}
 
 	/**
 	 * Render data page (in WordPress administration).
@@ -193,7 +193,7 @@ class DonkyCz_Contact_Form_Shortcode {
 
 		// Include view
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . '/admin/partials/contactform-table.php';
-	} // end options_page()
+	}
 
 	/**
 	 * Register TinyMCE button.
@@ -205,7 +205,7 @@ class DonkyCz_Contact_Form_Shortcode {
 	public function tinymce_button( $buttons ) {
 		array_push( $buttons, '|', 'donkycz' );
 		return $buttons;
-	} // end tinymce_button( $buttons )
+	}
 
 	/**
 	 * Register our TinyMCE plugin.
@@ -218,7 +218,7 @@ class DonkyCz_Contact_Form_Shortcode {
 	public function tinymce_plugin( $plugins ) {
 		$plugins['donkycz'] = plugin_dir_url( dirname( __FILE__ ) ) . 'admin/js/tinymce.js';
 		return $plugins;
-	} // end tinymce_plugin( $plugins )
+	}
 
     /**
      * Adds language file for our TinyMCE button.
@@ -231,7 +231,7 @@ class DonkyCz_Contact_Form_Shortcode {
     public function tinymce_language( $locales ) {
         $locales['odwp-donkycz-btn'] = plugin_dir_path( dirname( __FILE__ ) ) . '/admin/tinymce-i18n.php';
         return $locales;
-    } // end tinymce_language( $locales )
+    }
 
 	/**
 	 * Renders contact form (replaces the shortcode).
@@ -282,7 +282,7 @@ class DonkyCz_Contact_Form_Shortcode {
 
 		// Include view
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . '/public/partials/contact-form.php';
-	} // end render()
+	}
 
 	/**
 	 * @since 0.1
@@ -291,34 +291,45 @@ class DonkyCz_Contact_Form_Shortcode {
 	 *                         processed correctly and TRUE if form was 
 	 *                         submitted and processed successfully.
 	 * @uses wp_verify_nonce()
+	 * @todo Return (or set) error message here!
+	 * @todo Return FALSE and set error message when entity saving doesn't end well.
 	 */
 	private function process_form() {
 		$prefix = 'odwpdcz-';
 		$submit = filter_input( INPUT_POST, 'submit' );
 		$nonce  = filter_input( INPUT_POST, 'cfnonce' );
 
-		if (
-			! filter_input( INPUT_POST, $prefix . 'submit' ) ||
-			! (bool) wp_verify_nonce( filter_input( INPUT_POST, $prefix . 'nonce' ) )
-		) {
-			return;
-		}
-var_dump($_POST);
-exit();
-
 		if ( ! $submit || ! $nonce ) {
 			return null;
 		}
 
 		if ( ! wp_verify_nonce( $nonce, 'contact-form' ) ) {
-			// XXX Nonce not verified!
+			// XXX Error message: "Nonce not verified!"
 			return false;
+		}
+
+		// Prepare data
+		$data = array( 'id' => null , 'read' => 0, 'created' => date( 'Y-m-d H:i:s' ) );
+		$data['sender'] = filter_input( INPUT_POST, 'sender' );
+		$data['email'] = filter_input( INPUT_POST, 'email' );
+		$data['message'] = filter_input( INPUT_POST, 'message' );
+		$data['toy_id'] = filter_input( INPUT_POST, 'toy_id' );
+		$data['toy_spec'] = filter_input( INPUT_POST, 'toy_spec' );
+
+		// Create and save entity
+		$entity = new DonkyCz_Contact_Form_Model( $data );
+		$res = $entity->save();
+
+		if ( $res === false ) {
+			// XXX Error message: "Data was not saved to the database!"
+			// XXX return false;
+			echo "\nData was not saved to the database!\n";
 		}
 		
 		// XXX ...
 
 		return true;
-	} // end process_form()
-} // End of DonkyCz_Contact_Form_Shortcode
+	}
+}
 
 endif;

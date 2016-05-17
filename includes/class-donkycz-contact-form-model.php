@@ -81,7 +81,7 @@ class DonkyCz_Contact_Form_Model {
 		else if ( is_object( $data ) ) {
 			$this->exchange_data_object( $data );
 		}
-	} // end __construct(array $data = array())
+	}
 
 	/**
 	 * @access private
@@ -120,7 +120,7 @@ class DonkyCz_Contact_Form_Model {
 		if ( array_key_exists( 'read', $data ) ) {
 			$this->read = (bool) $data['read'];
 		}
-	} // end exchange_data_array( $data )
+	}
 
 	/**
 	 * @access private
@@ -133,7 +133,7 @@ class DonkyCz_Contact_Form_Model {
 		}
 
 		if ( property_exists( $data, 'sender' ) ) {
-			$this->sender = $data['sender'];
+			$this->sender = $data->sender;
 		}
 
 		if ( property_exists( $data, 'email' ) ) {
@@ -159,7 +159,7 @@ class DonkyCz_Contact_Form_Model {
 		if ( property_exists( $data,  'read' ) ) {
 			$this->read = (bool) $data->read;
 		}
-	} // end exchange_data_object( $data )
+	}
 
 	/**
 	 * Save record into the database.
@@ -211,7 +211,7 @@ class DonkyCz_Contact_Form_Model {
 		);
 
 		return ( $res !== false );
-	} // end save()
+	}
 
 	/**
 	 * Create our table.
@@ -248,7 +248,7 @@ EOT;
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $sql );
 		}
-	} // end create_table()
+	}
 
 	/**
 	 * Find all records.
@@ -282,7 +282,7 @@ EOT;
 		}
 
 		return $ret;
-	} // end find_all( $read = NULL )
+	}
 
 	/**
 	 * Find record by its ID.
@@ -306,7 +306,7 @@ EOT;
 		}
 
 		return new self( $obj );
-	} // end findy_by_id( $id )
+	}
 
 	/**
 	 * Find record by the sender column.
@@ -339,7 +339,7 @@ EOT;
 		}
 
 		return $ret;
-	} // end find_by_sender( $sender )
+	}
 
 	/**
 	 * Find record by the email column.
@@ -372,7 +372,7 @@ EOT;
 		}
 
 		return $ret;
-	} // end find_by_email( $toy_id, $read = null )
+	}
 
 	/**
 	 * Find record by the toy_id column.
@@ -405,7 +405,7 @@ EOT;
 		}
 
 		return $ret;
-	} // end find_by_toy_id( $toy_id, $read = null )
-} // End of DonkyCz_Contact_Form_Model
+	}
+}
 
 endif;

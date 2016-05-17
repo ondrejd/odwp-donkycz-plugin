@@ -49,7 +49,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'read' => __( 'Přečíst', DonkyCz::SLUG )
 		);
 		return $actions;
-	} // end get_bulk_actions()
+	}
 	
 	/**
 	 * @access public
@@ -69,16 +69,17 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'read' => __( 'Přečteno', DonkyCz::SLUG )
 		);
 		return $columns;
-	} // end get_columns()
-	
+	}
+
 	/**
 	 * @access protected
 	 * @todo Check `$_POST['s']` if didn't performed search.
 	 * @return array
 	 */
 	protected function get_data() {
-		return DonkyCz_Contact_Form_Model::find_all();
-	} // end get_data()
+		$data = DonkyCz_Contact_Form_Model::find_all();
+		return $data;
+	}
 
 	/**
 	 * @access public
@@ -97,72 +98,153 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'read' => array( 'read', false )
 		);
 		return $columns;
-	} // end get_sortable_columns()
-	
+	}
+
 	/**
 	 * @access public
 	 * @see WP_List_Table::prepare_items()
 	 * @todo Value of `$per_page` should be loaded from plugin settings.
 	 * @return void
 	 */
-	public function prepare_items()
-	{
-		//$columns = $this->get_columns();
-		//$hidden = array();
-		//$sortable = $this->get_sortable_columns();
+	public function prepare_items() {
 		// Column headers
-		//$this->_column_headers = array($columns, $hidden, $sortable);
 		$this->_column_headers = $this->get_column_info();
 		// Get data
 		$data = $this->get_data();
 		// Sorting
-		usort($data, array(&$this, 'usort_reorder'));
+		usort( $data, array( &$this, 'usort_reorder' ) );
 		// Pagination
+		$per_page = $this->get_items_per_page( 'contacts_per_page', 8 );
+		$this->set_pagination_args( array( 'total_items' => count( $data ), 'per_page' => $per_page ) );
 		$current_page = $this->get_pagenum();
-		//$per_page = 8; // XXX Should be set by user settings.
-		$per_page = $this->get_items_per_page('contacts_per_page', 8);
-		$this->found_data = array_slice($data, (($current_page-1) * $per_page), $per_page);
-		$this->set_pagination_args(array(
-			'total_items' => count($data),
-			'per_page' => $per_page
-		));
-		$this->items = $this->found_data;
-	} // end prepare_items()
+		// Set items to display
+		if ( count( $data ) > $per_page ) {
+			$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+		}
+		$this->items = $data;
+	}
 
-/*
-'sender'   => $this->sender,
-'email'    => $this->email,
-'message'  => $this->message,
-'toy_id'   => ( ! empty ( $this->toy_id ) ) ? (int) $this->toy_id : null,
-'toy_spec' => $this->toy_spec,
-'created'  => ( ! empty ( $this->created ) ) ? $this->created : date( 'Y-m-d H:i:s' ),
-'read'     => (int) $this->read
-*/
-	
 	/**
 	 * @access public
 	 * @param object $item Data row.
-	 * @param string $column_name Column name.
-	 * @see WP_List_Table::column_default()
-	 * @return void
+	 * @return string Returns HTML for the checkbox column.
 	 */
-	function column_default( $item, $column_name ) {
-		switch ( $column_name ) {
-			case 'id':
-			case 'created': 
-			case 'sender':
-			case 'email':
-			case 'message':
-			case 'toy_id':
-			case 'toy_spec':
-			case 'read':
-				return $item->{$column_name};
-			default:
-				// Show the whole array for troubleshooting purposes
-				return print_r( $item, true ) ; 
+	public function column_cb( $item ) {
+		return sprintf( '<input type="checkbox" name="contact[]" value="%s" />', $item->id );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `id`.
+	 */
+	public function column_id( $item ) {
+		return sprintf( '<code>%d</code>', intval( $item->id ) );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `created`.
+	 */
+	public function column_created( $item ) {
+		$actions = array(
+			'delete' => sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Smazat', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'delete', $item->id ),
+		);
+
+		if ( (bool) $item->read === true ) {
+			$actions['read'] = sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Označit jako nepřečtené', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'unread', $item->id );
+		} else {
+			$actions['read'] = sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Označit jako přečtené', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'read', $item->id );
 		}
-	} // end column_default( $item, $column_name ) 
-	
+		// XXX Format date using correct WP function!!!
+		$created = date( 'j.n.Y', strtotime( $item->created ) ); 
+
+		return sprintf( '%1$s %2$s', $created, $this->row_actions( $actions ) );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `sender`.
+	 */
+	public function column_sender( $item ) {
+		if ( empty( $item->sender ) ) {
+			return '';
+		}
+		return sprintf( '<b>%s</b>', $item->sender );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `email`.
+	 */
+	public function column_email( $item ) {
+		if ( empty( $item->email ) ) {
+			return '';
+		}
+		return sprintf( '<a href="mailto:%s">%s</a>', $item->email, $item->email );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `message`.
+	 */
+	public function column_message( $item ) {
+		if ( empty( $item->message ) ) {
+			return '';
+		}
+		return sprintf( '<p>%s</p>', $item->message );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `toy_id`.
+	 */
+	public function column_toy_id( $item ) {
+		if ( intval( $item->toy_id ) <= 0 ) {
+			return '';
+		}
+		return sprintf( '<p>%d</p>', intval( $item->toy_id ) );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `toy_spec`.
+	 */
+	public function column_toy_spec( $item ) {
+		if ( empty( $item->toy_spec ) ) {
+			return '';
+		}
+		return sprintf( '<p>%s</p>', $item->toy_spec );
+	}
+
+	/**
+	 * @access public
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the column `read`.
+	 */
+	public function column_read( $item ) {
+		if ( (bool) $item->read === true ) {
+			return '<span class="read">' . __( 'Ano', DonkyCz::SLUG ) . '</span>';
+		}
+		return '<span class="not-read">' . __( 'Ne', DonkyCz::SLUG ) . '</span>';
+	}
+
+	/**
+	 * Print message when no data items are found.
+	 * 
+	 * @access public
+	 * @see WP_List_Table::no_items()
+	 */
+	public function no_items() {
+		_e( 'V databázi nejsou prozatím uloženy žádné odeslané dotazy.', DonkyCz::SLUG );
+	}
+
 	/**
 	 * @access public
 	 * @param object $a First data row.
@@ -186,50 +268,14 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		}
 		// Send final sort direction to usort
 		return ( $order === 'asc' ) ? $result : -$result;
-	} // end usort_reorder( $a, $b )
-	
-	/**
-	 * Renders the first column with checkbox.
-	 * 
-	 * @access public
-	 * @param object $item Data row.
-	 * @return string
-	 */
-	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="contact[]" value="%s" />', $item->id );
-	} // end column_cb( $item ) 
-	
-	/**
-	 * Renders `created` column.
-	 * 
-	 * @access public
-	 * @param object $item Data row.
-	 * @return string
-	 */
-	public function column_created( $item ) {
-		$actions = array(
-			'edit'   => sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Upravit', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'edit', $item->id ),
-			'delete' => sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Smazat', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'delete', $item->id ),
-		);
-
-		return sprintf( '%1$s %2$s', $item->created, $this->row_actions( $actions ) );
-	} // end column_created( $item )
-	
-	/**
-	 * Print message when no data items are found.
-	 * 
-	 * @access public
-	 * @see WP_List_Table::no_items()
-	 */
-	public function no_items() {
-		_e( 'V databázi nejsou prozatím uloženy žádné odeslané dotazy.', DonkyCz::SLUG );
-	} // end no_items()
+	}
 
 	/**
-	 * ...
+	 * Add screen options.
 	 *
 	 * @access public
 	 * @global DonkyCz_Contact_Form_Table $donkycz_contact_form_table
+	 * @uses add_screen_option()
 	 */
 	public static function add_screen_options() {
 		global $donkycz_contact_form_table;
@@ -243,20 +289,43 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		add_screen_option( $option, $args );
 		
 		$donkycz_contact_form_table = new DonkyCz_Contact_Form_Table();
-	} // end add_screen_options()
+	}
 
 	/**
-	 * ...
+	 * Set screen option.
 	 *
 	 * @access public
 	 * @param string $status
 	 * @param string $option
 	 * @param mixed $value
+	 * @return mixed
 	 */
 	public static function set_screen_options( $status, $option, $value ) {
 		return $value;
-	} // end set_screen_options( $status, $option, $value )
+	}
 
-} // End of DonkyCz_Contact_Form_Table
+	/**
+	 * Hide some columns in toys list by default.
+	 *
+	 * @access public
+	 * @param string $user_login
+	 * @param WP_User $user
+	 * @uses get_user_option()
+	 * @uses update_user_option()
+	 */
+	public static function set_default_hidden_columns( $user_login, $user ) {
+		$metakey = 'managetoy_page_odwpdcz-data_pagecolumnshidden';
+		$hidden_columns = get_user_option( $metakey, $user->ID );
+
+		if ( is_array( $hidden_columns ) ) {
+			return;
+		}
+
+		$hidden_columns = array();
+		$hidden_columns[] = 'id';
+
+		update_user_option( $user->ID, $metakey, $hidden_columns, true );
+	}
+}
 
 endif;

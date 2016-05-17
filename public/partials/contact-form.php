@@ -23,28 +23,29 @@
 	<div class="form-row">
 		<div class="left">
 			<label for="<?= $prefix ?>sender">
-				<span><?= __( 'Jméno a příjmení', DonkyCz::SLUG ) ?></span>
+				<span><?php _e( 'Jméno a příjmení', DonkyCz::SLUG ); ?></span>
 				<input type="text" id="<?= $prefix ?>sender" name="sender" class="input" value=""/>
 			</label>
 		</div>
 		<div class="right">
 			<label for="<?= $prefix ?>email">
-				<span><?= __( 'E-mailová adresa', DonkyCz::SLUG ) ?></span>
+				<span><?php _e( 'E-mailová adresa', DonkyCz::SLUG ); ?></span>
 				<input type="email" id="<?= $prefix ?>email" name="email" class="input" value=""/>
 			</label>
 		</div>
 	</div>
 	<div class="form-row">
 		<label for="<?= $prefix ?>message">
-			<span><?= __( 'Chci se zeptat', DonkyCz::SLUG ) ?></span>
+			<span><?php _e( 'Chci se zeptat', DonkyCz::SLUG ); ?></span>
 			<textarea id="<?= $prefix ?>message" name="message" class="input"></textarea>
 		</label>
 	</div>
 	<div class="form-row">
 		<label for="<?= $prefix ?>toy_id">
-			<span><?= __( 'Vyberte hračku', DonkyCz::SLUG ) ?></span>
+			<span><?php _e( 'Vyberte hračku', DonkyCz::SLUG ); ?></span>
 			<?php if ( $toys->have_posts() ): ?>
 			<select id="<?= $prefix ?>toy_id" name="toy_id" class="input">
+				<option value="-1"><?php esc_html_e( 'Žádná', DonkyCz::SLUG ); ?></option>
 				<?php while ( $toys->have_posts() ) : $toys->the_post(); ?>
 				<option value="<?php the_ID(); ?>"><?php the_title(); ?></option>
 				<?php endwhile; ?>
@@ -55,13 +56,13 @@
 	</div>
 	<div class="form-row">
 		<label for="<?= $prefix ?>toy_spec">
-			<span><?= __( 'Specifikace hračky', DonkyCz::SLUG ) ?></span>
+			<span><?php _e( 'Specifikace hračky', DonkyCz::SLUG ); ?></span>
 			<textarea id="<?= $prefix ?>toy_spec" name="toy_spec" class="input"></textarea>
-			<span class="description"><?= __( '(Napište prosím Vaši představu ohledně vzhledu hračky, velikosti, barevnosti, doplňcích apod.)', DonkyCz::SLUG ) ?></span>
+			<span class="description"><?php _e( '(Napište prosím Vaši představu ohledně vzhledu hračky, velikosti, barevnosti, doplňcích apod.)', DonkyCz::SLUG ); ?></span>
 		</label>
 	</div>
 	<div class="submit-row">
-		<input id="<?= $prefix ?>submit" name="submit" type="submit" value="<?= __( 'Odeslat', DonkyCz::SLUG ) ?>" class="button-primary save alignright"/>
+		<input id="<?= $prefix ?>submit" name="submit" type="submit" value="<?php esc_html_e( 'Odeslat', DonkyCz::SLUG ); ?>" class="button-primary save alignright"/>
 		<span id="<?= $prefix ?>spinner" class="spinner is-active" style="visibility: collapse;"></span>
 		<div class="clear"></div>
 	</div>

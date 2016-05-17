@@ -184,6 +184,7 @@ class DonkyCz {
 		$this->loader->add_action( 'contextual_help', $plugin_admin, 'toy_list_contextual_help', 10, 3 );
 		// Hide some columns in toys list by default
 		$this->loader->add_action( 'wp_login', $plugin_admin, 'toy_list_set_default_hidden_columns', 10, 2 );
+		add_action( 'wp_login', array( 'DonkyCz_Contact_Form_Table', 'set_default_hidden_columns' ), 10, 2 );
 	}
 
 	/**
