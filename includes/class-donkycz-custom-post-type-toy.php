@@ -66,13 +66,12 @@ class DonkyCz_Custom_Post_Type_Toy {
 	}
 
 	/**
-	 * Returns toys.
-	 *
 	 * @static
 	 * @since 0.1
-	 * @return WP_Query
+	 * @param int $toy_id
+	 * @return WP_Query Returns all toys as `WP_Query`.
 	 */
-	public static function get_toys() {
+	public static function find_all() {
 		$args = array(
 			'post_type' => self::NAME,
 			'no_paging' => true,
@@ -80,6 +79,26 @@ class DonkyCz_Custom_Post_Type_Toy {
 		);
 
 		return new WP_Query( $args );
+	}
+
+	/**
+	 * @static
+	 * @since 0.1
+	 * @param int $toy_id
+	 * @return WP_Post Returns toy by its ID.
+	 */
+	public static function find_by_id( $toy_id ) {
+		return get_post( $toy_id );
+	}
+
+	/**
+	 * @obsolete Use `find_all` instead!
+	 * @static
+	 * @since 0.1
+	 * @return WP_Query Returns toys.
+	 */
+	public static function get_toys() {
+		return self::find_all();
 	}
 
 	/**

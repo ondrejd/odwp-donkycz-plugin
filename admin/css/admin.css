@@ -16,9 +16,8 @@ fieldset.toy-side-metabox #toy_stock {
 	width: 155px;
 }
 
-.read {
-	color: #7a0;
-}
-.not-read {
-	color: #F30;
-}
+.wp-list-table .column-id { width: 50px; }
+.wp-list-table .column-read { width: 50px; }
+.wp-list-table .column-read .read { color: #7a0; }
+.wp-list-table .column-read .not-read { color: #F30; }
+.wp-list-table .column-created { width: 110px; }

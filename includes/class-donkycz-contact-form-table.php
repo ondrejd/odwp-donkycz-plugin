@@ -64,9 +64,9 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'sender' => __( 'Odesílatel', DonkyCz::SLUG ),
 			'email' => __( 'E-mail', DonkyCz::SLUG ),
 			'message' => __( 'Zpráva', DonkyCz::SLUG ),
-			'toy_id' => __( 'Hračka ID', DonkyCz::SLUG ),
+			'toy_id' => __( 'Hračka', DonkyCz::SLUG ),
 			'toy_spec' => __( 'Hračka spec.', DonkyCz::SLUG ),
-			'read' => __( 'Přečteno', DonkyCz::SLUG )
+			'read' => __( '<abbr title="Přečteno">P.</abbr>', DonkyCz::SLUG )
 		);
 		return $columns;
 	}
@@ -148,19 +148,9 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	 * @return string Returns HTML for the column `created`.
 	 */
 	public function column_created( $item ) {
-		$actions = array(
-			'delete' => sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Smazat', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'delete', $item->id ),
-		);
-
-		if ( (bool) $item->read === true ) {
-			$actions['read'] = sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Označit jako nepřečtené', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'unread', $item->id );
-		} else {
-			$actions['read'] = sprintf( '<a href="?page=%s&action=%s&contact=%s">' . __( 'Označit jako přečtené', DonkyCz::SLUG ) . '</a>', $_REQUEST['page'], 'read', $item->id );
-		}
-		// XXX Format date using correct WP function!!!
-		$created = date( 'j.n.Y', strtotime( $item->created ) ); 
-
-		return sprintf( '%1$s %2$s', $created, $this->row_actions( $actions ) );
+		// TODO Format date using correct WP function!!!
+		$created = date( 'j.n.Y', strtotime( $item->created ) );
+		return sprintf( '<span class="date">%1$s</span>', $created );
 	}
 
 	/**
@@ -169,10 +159,14 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	 * @return string Returns HTML for the column `sender`.
 	 */
 	public function column_sender( $item ) {
-		if ( empty( $item->sender ) ) {
-			return '';
+		$actions = $this->prepare_row_actions( $item );
+		$sender = $item->sender;
+
+		if ( empty( $sender ) ) {
+			$sender = '---';
 		}
-		return sprintf( '<b>%s</b>', $item->sender );
+
+		return sprintf( '<b>%1$s</b> %2$s', $sender, $actions );
 	}
 
 	/**
@@ -208,7 +202,14 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( intval( $item->toy_id ) <= 0 ) {
 			return '';
 		}
-		return sprintf( '<p>%d</p>', intval( $item->toy_id ) );
+
+		$toy = DonkyCz_Custom_Post_Type_Toy::find_by_id( $item->toy_id );
+		if ( ( $toy instanceof WP_Post ) ) {
+			$url = admin_url( 'post.php?post=' . $toy->ID . '&action=edit' );
+			return sprintf( '<a href="%s">%s</a>', $url, $toy->post_title ); 
+		}
+
+		return sprintf( '<i>%d</i>', intval( $item->toy_id ) );
 	}
 
 	/**
@@ -268,6 +269,26 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		}
 		// Send final sort direction to usort
 		return ( $order === 'asc' ) ? $result : -$result;
+	}
+
+	/**
+	 * @access private
+	 * @param DonkyCz_Contact_Form_Model $item Data entity.
+	 * @return string Returns HTML for the row actions.
+	 */
+	private function prepare_row_actions( $item ) {
+		$link = '<a href="?page=%1$s&action=%2$s&contact=%3$s">%4$s</a>';
+		$actions = array();
+
+		if ( (bool) $item->read === true ) {
+			$actions['unread'] = sprintf( $link, $_REQUEST['page'], 'unread', $item->id, __( 'Nepřečteno', DonkyCz::SLUG ) );
+		} else {
+			$actions['read'] = sprintf( $link, $_REQUEST['page'], 'read', $item->id, __( 'Přečíst', DonkyCz::SLUG ) );
+		}
+
+		$actions['delete'] = sprintf( $link, $_REQUEST['page'], 'delete', $item->id, __( 'Smazat', DonkyCz::SLUG ) );
+
+		return $this->row_actions( $actions );
 	}
 
 	/**

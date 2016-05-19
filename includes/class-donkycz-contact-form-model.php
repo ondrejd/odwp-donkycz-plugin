@@ -294,7 +294,7 @@ EOT;
 	 * @since 0.1
 	 * @static
 	 */
-	public static function findy_by_id( $id ) {
+	public static function find_by_id( $id ) {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . self::TABLE_NAME;

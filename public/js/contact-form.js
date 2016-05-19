@@ -7,41 +7,34 @@
 	 * @author Ondřej Doněk <ondrejd@gmail.com>
 	 */
 
-	var p = plugin.formPrefix;
-console.log( p ); return;// XXX !!!
+	var p = plugin.prefix;
+
 	jQuery( '#' + p + 'contact_form' ).submit( 
 		function( event ) {
-			console.log( "Contact Form Submitted", plugin );
+			event.preventDefault();
 
-			// Show spinner and disable submit button
-			jQuery( '#' + p + 'spinner' ).css('visibility', 'visible' );
-			jQuery( '#' + p + 'submit' ).prop('disabled', true );
+			var data = jQuery( this ).serializeArray();
+			data.push( { "name": "action", "value": "process_form_ajax" } );
 
-			// Collect form data
-			var formdata = $( this ).serializeArray();
-			console.log( formdata );
-
-			// Send them to the server
-			jQuery.ajax( {
-				url  : plugin.ajaxUrl,
-				data : formdata,
+			jQuery.post( {
+				url  : plugin.url,
+				data : data,
 				beforeSend : function( d ) {
-					console.log( 'Before send', d );
+					jQuery( '#' + p + 'spinner' ).css( 'visibility', 'visible' );
+					jQuery( '#' + p + 'submit' ).prop( 'disabled', true );
 				}
 			} )
 				.done( function( response, textStatus, jqXHR ) {
-					console.log( 'AJAX done', textStatus, jqXHR, jqXHR.getAllResponseHeaders() );
+					console.log( 'AJAX done', response, textStatus );
 					// this.processAJAXResponse( response );
 				} )
 				.fail( function( jqXHR, textStatus, errorThrown ) {
-					console.log( 'AJAX failed', jqXHR.getAllResponseHeaders(), textStatus, errorThrown );
+					console.log( 'AJAX failed', textStatus, errorThrown );
 				} )
 				.then( function( jqXHR, textStatus, errorThrown ) {
-					console.log( 'AJAX after finished', jqXHR, textStatus, errorThrown );
+					jQuery( '#' + p + 'spinner' ).css( 'visibility', 'collapse' );
+					jQuery( '#' + p + 'submit' ).removeProp( 'disabled' );
 				} );
-			// ...
-
-			event.preventDefault();
 		}
 	);
 } )( jQuery, pluginObject || {} );

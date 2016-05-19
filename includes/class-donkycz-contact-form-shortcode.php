@@ -46,6 +46,9 @@ class DonkyCz_Contact_Form_Shortcode {
 
 		// Register our shortcode
 		add_shortcode( 'contact-form', array( $this, 'render' ) );
+		// Register AJAX actions
+		add_action( 'wp_ajax_process_form_ajax', array( $this, 'process_form_ajax' ) );
+        add_action( 'wp_ajax_nopriv_process_form_ajax', array( $this, 'process_form_ajax' ) );
 
 		// If we are not in WP admin return
 		if ( ! is_admin() ) {
@@ -238,11 +241,12 @@ class DonkyCz_Contact_Form_Shortcode {
 	 * 
 	 * @since 0.1
 	 * @return string
+	 * @uses admin_url()
 	 * @uses plugin_dir_path()
 	 * @uses plugin_dir_url()
-	 * @uses wp_register_script()
+	 * @uses wp_enqeue_script()
 	 * @uses wp_localize_script()
-	 * @uses wp_enqeue_scrript()
+	 * @uses wp_register_script()
 	 */
 	public function render() {
 		$res = $this->process_form();
@@ -274,9 +278,10 @@ class DonkyCz_Contact_Form_Shortcode {
 		$scriptname = $prefix . 'contact-form';
 		$scripturl  = plugin_dir_url( dirname( __FILE__ ) ) . 'public/js/contact-form.js';
 		wp_register_script( $scriptname, $scripturl, array( 'jquery' ), DonkyCz::VERSION );
+		 // TODO AJAX URL can't be null!!!
 		wp_localize_script( $scriptname, 'pluginObject', array(
-			'formPrefix' => $prefix,
-			'ajaxUrl' => null,
+			'prefix' => $prefix,
+			'url'    => admin_url( 'admin-ajax.php' )
 		) );
 		wp_enqueue_script( $scriptname );
 
@@ -304,31 +309,62 @@ class DonkyCz_Contact_Form_Shortcode {
 		}
 
 		if ( ! wp_verify_nonce( $nonce, 'contact-form' ) ) {
-			// XXX Error message: "Nonce not verified!"
+			// TODO Error message: "Nonce not verified!"
 			return false;
 		}
 
-		// Prepare data
+		$entity = $this->get_post_form_data();
+		$res = $entity->save();
+
+		if ( $res === false ) {
+			// TODO Error message: "Data was not saved to the database!"
+			// TODO return false;
+			//echo "\nData was not saved to the database!\n";
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Submit form via AJAX.
+	 *
+	 * @since 0.1
+	 * @uses check_ajax_referer()
+	 * @uses wp_send_json_error()
+	 * @uses wp_send_json_success()
+	 */
+	public function process_form_ajax() {
+		//check_ajax_referer( 'ajax_contact_form', 'security' );
+
+		$entity = $this->get_post_form_data();
+		$res = $entity->save();
+
+		if ( $res === false ) {
+			wp_send_json_error( array(
+				'error' => __( 'Při ukládání dat z formuláře do databáze nastala chyba!', DonkyCz::SLUG ) 
+			) );
+		}
+
+		wp_send_json_success( array(
+			'message' => __( 'Formulář byl úspěšně odeslán.', DonkyCz::SLUG )
+		) );
+	}
+
+	/**
+	 * @access private
+	 * @since 0.1
+	 * @return DonkyCz_Contact_Form_Model
+	 */
+	private function get_post_form_data() {
 		$data = array( 'id' => null , 'read' => 0, 'created' => date( 'Y-m-d H:i:s' ) );
 		$data['sender'] = filter_input( INPUT_POST, 'sender' );
 		$data['email'] = filter_input( INPUT_POST, 'email' );
 		$data['message'] = filter_input( INPUT_POST, 'message' );
 		$data['toy_id'] = filter_input( INPUT_POST, 'toy_id' );
 		$data['toy_spec'] = filter_input( INPUT_POST, 'toy_spec' );
-
-		// Create and save entity
-		$entity = new DonkyCz_Contact_Form_Model( $data );
-		$res = $entity->save();
-
-		if ( $res === false ) {
-			// XXX Error message: "Data was not saved to the database!"
-			// XXX return false;
-			echo "\nData was not saved to the database!\n";
-		}
 		
-		// XXX ...
-
-		return true;
+		return new DonkyCz_Contact_Form_Model( $data );
 	}
 }
 
