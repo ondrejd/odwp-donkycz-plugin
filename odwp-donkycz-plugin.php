@@ -177,21 +177,16 @@ class DonkyCz {
 	 * - {@see DonkyCz_Contact_Form_Model}. Defines simple data model for contact form.
 	 * - {@see DonkyCz_Contact_Form_Table}. Defines data listing table in WP admin.
 	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
 	 * @since 0.1
 	 * @access private
 	 */
 	private function load_dependencies() {
-		$plugin_dir = plugin_dir_path( dirname( __FILE__ ) );
+		$plugin_dir = plugin_dir_path( __FILE__ );
 		$main_files = array(
 			$plugin_dir . 'includes/class-donkycz-custom-post-type-toy.php',
 			$plugin_dir . 'includes/class-donkycz-taxonomy-toy-category.php',
 			$plugin_dir . 'includes/class-donkycz-contact-form-model.php',
 			$plugin_dir . 'includes/class-donkycz-contact-form-table.php',
-			//$plugin_dir . 'admin/class-donkycz-admin.php',
-			//$plugin_dir . 'public/class-donkycz-public.php',
 		);
 
 		foreach ( $main_files as $file ) {
@@ -211,7 +206,7 @@ class DonkyCz {
 		$type_toy = new DonkyCz_Custom_Post_Type_Toy();
 
 		// Initialize custom post type
-		$this->loader->add_action( 'init', $type_toy, 'init' );
+		add_action( 'init', array( $type_toy, 'init' ) );
 	}
 
 	/**
@@ -221,10 +216,10 @@ class DonkyCz {
 	 * @access private
 	 */
 	private function define_custom_taxonomies() {
-		$taxonomy_toy = new DonkyCz_Taxonomy_Toy_Category();
+		$taxonomy_toy_cat = new DonkyCz_Taxonomy_Toy_Category();
 
 		// Initialize taxonomy
-		$this->loader->add_action( 'init', $taxonomy_toy, 'init' );
+		add_action( 'init', array( $taxonomy_toy_cat, 'init' ) );
 	}
 
 	/**
@@ -238,10 +233,12 @@ class DonkyCz {
 		// Scripts and styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+
 		// Metaboxes
 		add_action( 'add_meta_boxes', array( $this, 'add_toy_metaboxes' ) );
 		add_action( 'save_post', array( $this, 'save_toy_metaboxes' ) );
 		add_action( 'new_to_publish', array( $this, 'save_toy_metaboxes' ) );
+
 		// Toy list table
 		add_filter( 'manage_toy_posts_columns', array( $this, 'toy_list_manage_posts_columns' ) );
 		add_action( 'manage_posts_custom_column', array( $this, 'toy_list_manage_custom_columns' ), 10, 2 );
@@ -249,7 +246,7 @@ class DonkyCz {
 		add_action( 'restrict_manage_posts', array( $this, 'toy_list_restrict_listings_by_category' ) );
 		add_action( 'contextual_help', array( $this, 'toy_list_contextual_help' ), 10, 3 );
 		add_action( 'wp_login', array( $this, 'toy_list_set_default_hidden_columns' ), 10, 2 );
-return;// TODO !!!!
+
 		// Contacts list table
 		// Perform row actions within toys list table.
 		add_filter( 'request', array( $this, 'contact_list_perform_row_actions' ) );
@@ -274,6 +271,7 @@ return;// TODO !!!!
 		// Scripts and styles
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
+
 		// Add custom post type to WP front-page
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 
@@ -289,7 +287,7 @@ return;// TODO !!!!
 	 * @since 0.1
 	 */
 	public function enqueue_public_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( self::SLUG, plugin_dir_url( __FILE__ ) . 'css/public.css', array(), self::VERSION, 'all' );
 	}
 
 	/**
@@ -298,7 +296,7 @@ return;// TODO !!!!
 	 * @since 0.1
 	 */
 	public function enqueue_public_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( self::SLUG, plugin_dir_url( __FILE__ ) . 'js/public.js', array( 'jquery' ), self::VERSION, false );
 	}
 
 	/**
@@ -307,7 +305,7 @@ return;// TODO !!!!
 	 * @since 0.1
 	 */
 	public function enqueue_admin_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( self::SLUG, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), self::VERSION, 'all' );
 	}
 
 	/**
@@ -316,7 +314,7 @@ return;// TODO !!!!
 	 * @since 0.1
 	 */
 	public function enqueue_admin_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( self::SLUG, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), self::VERSION, false );
 	}
 
 	/**
