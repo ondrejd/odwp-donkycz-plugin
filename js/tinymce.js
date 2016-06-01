@@ -3,7 +3,6 @@
  *
  * @since 0.1
  * @link https://github.com/ondrejd/odwp-donkycz-plugin
- * @todo Rename this file (because it will be not just contact form button)!
  */
 (function() {
 	tinymce.create('tinymce.plugins.donkycz', {

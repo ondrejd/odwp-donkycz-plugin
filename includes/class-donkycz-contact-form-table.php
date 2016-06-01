@@ -37,16 +37,78 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	/**
-	 * Returns bulk actions.
-	 * 
+	 * @access protected
+	 * @var array $available_views
+	 */
+	protected $available_views;
+
+	public function __construct() {
+		global $status, $page;                
+
+		$this->available_views = array(
+			'all'    => __( 'Všechny', DonkyCz::SLUG ),
+			'read'   => __( 'Přečtené', DonkyCz::SLUG ),
+			'unread' => __( 'Nepřečtené', DonkyCz::SLUG ),
+			'trash'  => __( 'Smazané', DonkyCz::SLUG )
+		);
+
+		parent::__construct( array(
+			'singular' => __( 'zpráva', DonkyCz::SLUG ),  
+			'plural'   => __( 'zprávy', DonkyCz::SLUG ),
+			'ajax'     => false      
+		) );
+	}
+
+	/**
+	 * @access public
+	 * @return string Returns key of the currently selected view.
+	 */
+	public function get_current_view() {
+		$view = filter_input( INPUT_GET, 'view' );
+
+		if ( empty( $view ) ) {
+			$view = filter_input( INPUT_POST, 'view' );
+
+			if ( empty ( $view ) ) {
+				$view = 'all';
+			}
+		}
+
+		return $view;
+	}
+
+	/**
+	 * @access protected
+	 * @see WP_List_Table::get_views()
+	 * @return array Returns available list table views.
+	 * @todo Get count for all views and display it.
+	 */
+	protected function get_views() {
+		$url = 'edit.php?post_type=toy&amp;page=odwpdcz-data_page&amp;view=';
+		$current = $this->get_current_view();
+		$links = array();
+
+		foreach ( $this->available_views as $view => $label ) {
+			$html = '<a href="%2$s"%3$s>%1$s <span class="count">(%4$d)</span></a>';
+			$class = ( $view == $current ) ? ' class="current"' : '';
+			$count = 0;
+
+			$links[$view] = sprintf( $html, $label, admin_url( $url . $view ), $class, $count );
+		}
+
+		return $links;
+	}
+
+	/**
 	 * @access public
 	 * @see WP_List_Table::get_bulk_actions()
-	 * @return array
+	 * @return array Returns bulk actions.
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
 			'delete' => __( 'Smazat', DonkyCz::SLUG ),
-			'read' => __( 'Přečíst', DonkyCz::SLUG )
+			'read'   => __( 'Přečíst', DonkyCz::SLUG ),
+			'unread' => __( 'Zrušit přečtení', DonkyCz::SLUG )
 		);
 		return $actions;
 	}
@@ -57,7 +119,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$columns = array(
+		return array(
 			'cb' => '<input type="checkbox"/>',
 			'id' => __( 'ID', DonkyCz::SLUG ),
 			'created' => __( 'Odesláno', DonkyCz::SLUG ),
@@ -68,7 +130,6 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'toy_spec' => __( 'Hračka spec.', DonkyCz::SLUG ),
 			'read' => __( '<abbr title="Přečteno">P.</abbr>', DonkyCz::SLUG )
 		);
-		return $columns;
 	}
 
 	/**
@@ -77,8 +138,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_data() {
-		$data = DonkyCz_Contact_Form_Model::find_all();
-		return $data;
+		return DonkyCz_Contact_Form_Model::find_all();
 	}
 
 	/**
@@ -92,11 +152,12 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 			'created' => array( 'created', false ),
 			'sender' => array( 'sender', false ),
 			'email' => array( 'email', false ),
-			'message' => array( 'message', false ),
+			//'message' => array( 'message', false ),
 			'toy_id' => array( 'toy_id', false ),
-			'toy_spec' => array( 'toy_spec', false ),
+			//'toy_spec' => array( 'toy_spec', false ),
 			'read' => array( 'read', false )
 		);
+
 		return $columns;
 	}
 
@@ -117,10 +178,12 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		$per_page = $this->get_items_per_page( 'contacts_per_page', 8 );
 		$this->set_pagination_args( array( 'total_items' => count( $data ), 'per_page' => $per_page ) );
 		$current_page = $this->get_pagenum();
+
 		// Set items to display
 		if ( count( $data ) > $per_page ) {
 			$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 		}
+
 		$this->items = $data;
 	}
 
@@ -150,6 +213,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	public function column_created( $item ) {
 		// TODO Format date using correct WP function!!!
 		$created = date( 'j.n.Y', strtotime( $item->created ) );
+
 		return sprintf( '<span class="date">%1$s</span>', $created );
 	}
 
@@ -178,6 +242,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( empty( $item->email ) ) {
 			return '';
 		}
+
 		return sprintf( '<a href="mailto:%1$s">%1$s</a>', $item->email );
 	}
 
@@ -190,6 +255,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( empty( $item->message ) ) {
 			return '';
 		}
+	
 		return sprintf( '<p>%s</p>', $item->message );
 	}
 
@@ -204,6 +270,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		}
 
 		$toy = DonkyCz_Custom_Post_Type_Toy::find_by_id( $item->toy_id );
+
 		if ( ( $toy instanceof WP_Post ) ) {
 			$url = admin_url( 'post.php?post=' . $toy->ID . '&action=edit' );
 			return sprintf( '<a href="%s">%s</a>', $url, $toy->post_title ); 
@@ -221,6 +288,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( empty( $item->toy_spec ) ) {
 			return '';
 		}
+
 		return sprintf( '<p>%s</p>', $item->toy_spec );
 	}
 
@@ -233,6 +301,7 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 		if ( (bool) $item->read === true ) {
 			return '<span class="read">' . __( 'Ano', DonkyCz::SLUG ) . '</span>';
 		}
+
 		return '<span class="not-read">' . __( 'Ne', DonkyCz::SLUG ) . '</span>';
 	}
 
@@ -272,80 +341,26 @@ class DonkyCz_Contact_Form_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @access private
+	 * Prepares row actions.
+	 *
+	 * @access protected
 	 * @param DonkyCz_Contact_Form_Model $item Data entity.
 	 * @return string Returns HTML for the row actions.
+	 * @uses admin_url()
 	 */
-	private function prepare_row_actions( $item ) {
-		$link = '<a href="?page=%1$s&action=%2$s&contact=%3$s">%4$s</a>';
-		$actions = array();
+	protected function prepare_row_actions( $item ) {
+		$link = '<a href="%1$s">%2$s</a>';
+		$actions = array(
+			'delete' => sprintf( $link, admin_url( 'edit.php?post_type=' . DonkyCz_Custom_Post_Type_Toy::TYPE . '&page=odwpdcz-data_page&action=delete&post_id=' . $item->id ), __( 'Smazat', DonkyCz::SLUG ) ),
+		);
 
 		if ( (bool) $item->read === true ) {
-			$actions['unread'] = sprintf( $link, $_REQUEST['page'], 'unread', $item->id, __( 'Nepřečteno', DonkyCz::SLUG ) );
+			$actions['unread'] = sprintf( $link, admin_url( 'edit.php?post_type=' . DonkyCz_Custom_Post_Type_Toy::TYPE . '&page=odwpdcz-data_page&action=unread&post_id=' . $item->id ), __( 'Nepřečteno', DonkyCz::SLUG ) );
 		} else {
-			$actions['read'] = sprintf( $link, $_REQUEST['page'], 'read', $item->id, __( 'Přečíst', DonkyCz::SLUG ) );
+			$actions['read'] = sprintf( $link, admin_url( 'edit.php?post_type=' . DonkyCz_Custom_Post_Type_Toy::TYPE . '&page=odwpdcz-data_page&action=read&post_id=' . $item->id ), __( 'Přečíst', DonkyCz::SLUG ) );
 		}
 
-		$actions['delete'] = sprintf( $link, $_REQUEST['page'], 'delete', $item->id, __( 'Smazat', DonkyCz::SLUG ) );
-
-		return $this->row_actions( $actions );
-	}
-
-	/**
-	 * Add screen options.
-	 *
-	 * @access public
-	 * @global DonkyCz_Contact_Form_Table $donkycz_contact_form_table
-	 * @uses add_screen_option()
-	 */
-	public static function add_screen_options() {
-		global $donkycz_contact_form_table;
-		
-		$option = 'per_page';
-		$args = array(
-			'label' => __( 'Záznamů na stránce', DonkyCz::SLUG ),
-			'default' => 8,
-			'option' => 'contacts_per_page'
-		);
-		add_screen_option( $option, $args );
-		
-		$donkycz_contact_form_table = new DonkyCz_Contact_Form_Table();
-	}
-
-	/**
-	 * Set screen option.
-	 *
-	 * @access public
-	 * @param string $status
-	 * @param string $option
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	public static function set_screen_options( $status, $option, $value ) {
-		return $value;
-	}
-
-	/**
-	 * Hide some columns in toys list by default.
-	 *
-	 * @access public
-	 * @param string $user_login
-	 * @param WP_User $user
-	 * @uses get_user_option()
-	 * @uses update_user_option()
-	 */
-	public static function set_default_hidden_columns( $user_login, $user ) {
-		$metakey = 'managetoy_page_odwpdcz-data_pagecolumnshidden';
-		$hidden_columns = get_user_option( $metakey, $user->ID );
-
-		if ( is_array( $hidden_columns ) ) {
-			return;
-		}
-
-		$hidden_columns = array();
-		$hidden_columns[] = 'id';
-
-		update_user_option( $user->ID, $metakey, $hidden_columns, true );
+		return $this->row_actions( array_reverse( $actions ) );
 	}
 }
 

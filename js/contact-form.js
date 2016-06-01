@@ -27,9 +27,11 @@
 				.done( function( response, textStatus, jqXHR ) {
 					console.log( 'AJAX done', response, textStatus );
 					// this.processAJAXResponse( response );
+					// TODO Show response, clear the form and call `footerPageHide()` (with some delay).
 				} )
 				.fail( function( jqXHR, textStatus, errorThrown ) {
 					console.log( 'AJAX failed', textStatus, errorThrown );
+					// TODO Show response and do nothing.
 				} )
 				.then( function( jqXHR, textStatus, errorThrown ) {
 					jQuery( '#' + p + 'spinner' ).css( 'visibility', 'collapse' );

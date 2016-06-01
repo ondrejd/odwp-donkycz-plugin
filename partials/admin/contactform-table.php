@@ -25,10 +25,15 @@
 
 	<h1><?php esc_html_e( 'Kontaktní formulář - Odeslaná data', DonkyCz::SLUG ); ?></h1>
 
-	<?php
-		$table->prepare_items();
-		$table->search_box( 'search', 'search_id' );
-		$table->display();
-	?>
+    <?php $table->views(); ?>
+    <form method="post">
+		<input type="hidden" name="page" value="odwpdcz-odwpdcz-data_page"/>
+		<input type="hidden" name="view" value="<?php echo $table->get_current_view(); ?>"/>
+		<?php
+			$table->prepare_items();
+			$table->search_box( 'search', 'search_id' );
+			$table->display();
+		?>
+    </form>
 
 </div>
